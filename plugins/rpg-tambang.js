@@ -106,10 +106,16 @@ handler.before = async m => {
         if (areas[currentArea].txt === msg) {
             let { area, reward } = areas[currentArea];
             user.exp += reward.exp;
+
+            // Update resources
             for (let resource in reward.resources) {
                 user.resources[resource] += reward.resources[resource];
                 totalReward[resource] += reward.resources[resource];
+
+                // Ensure the updated resources are saved to the database
+                global.db.data.users[m.sender][resource] += reward.resources[resource];
             }
+
             hasilTambang++;
             currentArea++;
             conn.tambang[m.sender].currentArea = currentArea;
@@ -137,4 +143,5 @@ handler.command = /^(tambang)$/i;
 handler.group = true;
 handler.register = true;
 handler.rpg = true;
+
 module.exports = handler;

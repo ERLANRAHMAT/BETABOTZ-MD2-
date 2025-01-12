@@ -1,11 +1,11 @@
 let handler = async (m, { conn }) => {
-    let __timers = (new Date - global.db.data.users[m.sender].lastnambang)
-    let _timers = (300000 - __timers)
-    let timers = clockString(_timers) 
+  let __timers = (new Date - global.db.data.users[m.sender].lastnambang)
+  let _timers = (300000 - __timers)
+  let timers = clockString(_timers) 
 let name = conn.getName(m.sender)
-    let user = global.db.data.users[m.sender]
-    
-     if (new Date - global.db.data.users[m.sender].lastnambang > 300000) {
+  let user = global.db.data.users[m.sender]
+  
+   if (new Date - global.db.data.users[m.sender].lastnambang > 300000) {
 let randomaku1 = `${Math.floor(Math.random() * 10)}`
 let randomaku2 = `${Math.floor(Math.random() * 10)}`
 let randomaku4 = `${Math.floor(Math.random() * 5)}`
@@ -38,25 +38,25 @@ let arr = [
 🪨🪨⛏️⛏️🪙  🪙 🪨       \n\n\n➕ kamu di tambang...`, 
 `➕ 💹Mendapatkan hasil tambang....`, 
 `*—[ Hasil nambang kamu ${name} ]—*
- ➕ 💹 berlian = [ ${zero3} ]
- ➕ ✨ emas = [ ${zero4} ] 	
- ➕ ✨ diamond = [ ${zero5} ] 		 
+➕ 🪨 coal = [ ${zero5} ]
+➕ ✨ emas = [ ${zero4} ] 	
+➕ ✨ diamond = [ ${zero3} ] 		 
 ${wm}`
 ]
 
 let { key } = await conn.sendMessage(m.chat, {text: 'mencari tempat nambang.....'})
 for (let i = 0; i < arr.length; i++) {
-  await new Promise(resolve => setTimeout(resolve, 10000));
-  await conn.sendMessage(m.chat, { text: arr[i], edit: key });
+await new Promise(resolve => setTimeout(resolve, 10000));
+await conn.sendMessage(m.chat, { text: arr[i], edit: key });
 }
 
-global.db.data.users[m.sender].berlian += rbrb5
+global.db.data.users[m.sender].coal += rbrb5
 global.db.data.users[m.sender].emas += rbrb4 
 global.db.data.users[m.sender].diamond += rbrb3
 global.db.data.users[m.sender].tiketcoin += 1
 
-  user.lastnambang = new Date * 1
-    } else m.reply(`Sepertinya anda sudah kecapekan dari tambang... silahkan istirahat dulu sekitar\n*${timers}*`)
+user.lastnambang = new Date * 1
+  } else m.reply(`Sepertinya anda sudah kecapekan dari tambang... silahkan istirahat dulu sekitar\n*${timers}*`)
 }
 handler.help = ['nambang']
 handler.tags = ['rpg']
@@ -67,9 +67,9 @@ module.exports = handler
 
 
 function clockString(ms) {
-  let h = Math.floor(ms / 3600000)
-  let m = Math.floor(ms / 60000) % 60
-  let s = Math.floor(ms / 1000) % 60
-  console.log({ms,h,m,s})
-  return [h, m, s].map(v => v.toString().padStart(2, 0) ).join(':')
+let h = Math.floor(ms / 3600000)
+let m = Math.floor(ms / 60000) % 60
+let s = Math.floor(ms / 1000) % 60
+console.log({ms,h,m,s})
+return [h, m, s].map(v => v.toString().padStart(2, 0) ).join(':')
 }
