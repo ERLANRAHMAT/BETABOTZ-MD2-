@@ -3,19 +3,13 @@ let moment = require('moment-timezone');
 
 const timeZone = 'Asia/Jakarta';
 
-
 const groupChats = [
-    '120363043100546404@g.us',
-    '120363326240281897@g.us',
-    '120363361439264023@g.us',
-    '120363133475992252@g.us',
-    '120363180929269883@g.us',
+    'jid@g.us',
+    'jid@g.us',
 ];
-
 
 async function getPrayerTimesAndSetReminders() {
     try {
-        // URL API untuk mendapatkan jadwal sholat
         let city = 'jakarta';
         let url = `https://api.betabotz.eu.org/api/tools/jadwalshalat?kota=${city}&apikey=${lann}`;
         let response = await axios.get(url);
@@ -25,15 +19,11 @@ async function getPrayerTimesAndSetReminders() {
             console.log(`[❗] Jadwal shalat untuk kota ${city.toUpperCase()} tidak ditemukan atau tidak tersedia.`);
             return;
         }
-
-
-        let jadwal = data.result.data[0].timings;
-        if (!jadwal) {
-            console.log(`[❗] Jadwal shalat untuk kota ${city.toUpperCase()} tidak ditemukan atau tidak tersedia.`);
-            return;
-        }
-
-        console.log(`
+        const prayerTimes = getPrayerTimes(data);
+        
+        if (prayerTimes) {
+            let jadwal = prayerTimes.timings;
+            console.log(`
 ┌「 ${city.toUpperCase()} 」  
 ├ Subuh: ${jadwal.Fajr}
 ├ Dzuhur: ${jadwal.Dhuhr}
@@ -42,11 +32,30 @@ async function getPrayerTimesAndSetReminders() {
 ├ Isya: ${jadwal.Isha}
 └──────────`);
 
+            setPrayerTimers(jadwal);
+        } else {
+            console.log(`[❗] Tidak ada data jadwal sholat untuk tanggal hari ini.`);
+        }
 
-        setPrayerTimers(jadwal);
     } catch (error) {
         console.error(`[❗] Terjadi kesalahan saat mengambil data.`);
     }
+}
+
+function getPrayerTimes(jsonData) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const todayString = `${day}-${month}-${year}`;
+
+    for (const item of jsonData.result.data) {
+        if (item.date.gregorian.date === todayString) {
+            return item;
+        }
+    }
+    return null;
 }
 
 function setPrayerTimers(jadwal) {
@@ -86,7 +95,7 @@ async function sendPrayerReminderToGroups(prayerName, prayerTime) {
 }
 
 async function sendReminderToGroup(chatId, text) {
-    await conn.sendMessage(chatId, { text }); // Mengirim pesan langsung tanpa hidetag
+    await conn.sendMessage(chatId, { text });
 }
 
 function startDailyPrayerReminder() {
@@ -96,7 +105,7 @@ function startDailyPrayerReminder() {
         let now = new Date();
         console.log(`Mengambil jadwal sholat untuk hari ini (${now.toLocaleDateString()})`);
         getPrayerTimesAndSetReminders();
-    }, 24 * 60 * 60 * 1000);
+    }, 6 * 60 * 60 * 1000); // setiap 6 jam seklai get data dari api
 }
 
 startDailyPrayerReminder();
