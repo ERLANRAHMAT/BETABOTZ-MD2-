@@ -1,4 +1,4 @@
-//free source code store by betabotz di buat oleh danapura133
+//free source code store by betabotz di buat oleh danaputra133 github
 //silahkan di ganti ganti sesuka hati kalian
 
 const moment = require('moment-timezone');
