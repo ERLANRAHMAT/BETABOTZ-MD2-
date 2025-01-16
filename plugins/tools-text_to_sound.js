@@ -75,6 +75,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       }
       else if (command == 'texttokr') 
         {
+
         const response = await axios.get(`https://api.betabotz.eu.org/api/sound/texttosound?text1=${text}&lang=jko-KR&apikey=${lann}`)
           const res = response.data.result;      
           var  mp3 = res;
@@ -83,7 +84,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       }
       else if (command == 'texttothai') 
         {
-        const response = await axios.get(`https://api.betabotz.eu.org/api/sound/texttosound?text1=${text}&lang=th-THapikey=${lann}`)
+        const response = await axios.get(`https://api.betabotz.eu.org/api/sound/texttosound?text1=${text}&lang=th-TH&apikey=${lann}`)
           const res = response.data.result;      
           var  mp3 = res;
           // let caption = `*Title:* ${title}\n*Duration:* ${duration}`
@@ -115,4 +116,3 @@ handler.fail = null;
 handler.private = false;
 
 module.exports = handler;
-
