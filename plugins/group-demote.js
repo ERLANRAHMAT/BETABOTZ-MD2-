@@ -1,5 +1,6 @@
 let handler = async (m, { teks, conn, isOwner, isAdmin, args, command }) => {
-  if (!(isAdmin || isOwner)) {
+    if (m.isBaileys) return;
+    if (!(isAdmin || isOwner)) {
       global.dfail('admin', m, conn);
       throw false;
   }
