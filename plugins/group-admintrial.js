@@ -72,8 +72,8 @@ let handler = async (m, { conn, args, command, participants }) => {
     }
 };
 
-handler.help = ['jadiadmin @user <waktu>', 'unadmin @user <waktu>', 'kick @user <waktu>'];
-handler.command = /^(jadiadmin|unadmin|kick)$/i;
+handler.help = ['jadiadmin @user <waktu>', 'unadmin @user <waktu>', 'kick2 @user <waktu>'];
+handler.command = /^(jadiadmin|unadmin|kick2)$/i;
 handler.tags = ['group'];
 handler.group = true;
 handler.admin = true; 
