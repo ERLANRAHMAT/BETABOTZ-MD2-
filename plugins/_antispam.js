@@ -1,23 +1,20 @@
-exports.before = async function (m) {
+exports.before = async function (m, { isAdmin, isOwner }) {
     let user = db.data.users[m.sender];
     let chat = db.data.chats[m.chat];
 
+    if (isAdmin || isOwner) {
+        return; 
+    }
     if ((m.chat.endsWith('broadcast') || m.fromMe) && !m.message && !chat.isBanned) return;
     if (!m.text.startsWith('.') && !m.text.startsWith('#') && !m.text.startsWith('!') && !m.text.startsWith('/') && !m.text.startsWith('\\')) return;
-
-    // Periksa apakah waktu banned sudah habis
     var now = new Date() * 1;
     if (user.banned && now >= user.lastBanned) {
         user.banned = false;
     }
-
     if (user.banned) return;
-
     this.spam = this.spam ? this.spam : {};
-
     if (m.sender in this.spam) {
         this.spam[m.sender].count++;
-
         if (m.messageTimestamp.toNumber() - this.spam[m.sender].lastspam >= 4) {
             if (this.spam[m.sender].count >= 2) {
                 user.banned = true;
@@ -43,6 +40,3 @@ exports.before = async function (m) {
         };
     }
 };
-
-
-//tq to xm4ze github
