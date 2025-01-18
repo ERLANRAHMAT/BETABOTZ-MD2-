@@ -56,7 +56,7 @@ handler.before = async (m, { conn, text }) => {
                         mediaType: 1,
                         title: "Beta AI - Jawaban dari Pertanyaanmu",
                         body: "Beta AI siap membantu 😄",
-                        thumbnailUrl: "https://pomf2.lain.la/f/zdiccxwo.jpg",
+                        thumbnailUrl: "https://api.betabotz.eu.org/api/tools/get-upload?id=f/zdiccxwo.jpg",
                         renderLargerThumbnail: true, 
                         showAdAttribution: true
                     }

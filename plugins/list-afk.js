@@ -14,7 +14,7 @@ function listAfkHandler(m, { conn }) {
             contextInfo: {
                 externalAdReply: {
                     title: 'list afk user',
-                    thumbnailUrl: 'https://pomf2.lain.la/f/mzx1qcg.jpg',
+                    thumbnailUrl: 'https://api.betabotz.eu.org/api/tools/get-upload?id=f/mzx1qcg.jpg',
                     mediaType: 1,
                     renderLargerThumbnail: true
                 }
