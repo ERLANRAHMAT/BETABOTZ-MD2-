@@ -3,7 +3,7 @@ let fetch = require('node-fetch')
 
 let handler = async (m, { conn, command }) => {
 let audio = 'src/lagu.mp3'
-const img = await fetch(`https://btch.pages.dev/file/3947ccd86c9e9426eec8b.jpg`).then(res => res.buffer())
+const img = await fetch(`https://telegra.ph/file/3947ccd86c9e9426eec8b.jpg`).then(res => res.buffer())
 let text = `🎵 Lagu Betabotz 🎵
 
 (Verse 1)

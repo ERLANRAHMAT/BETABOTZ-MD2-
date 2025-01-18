@@ -19,7 +19,7 @@ conn.sendMessage(m.chat, {
                             title: "RANDOM GORE",
                             body: '',
                             renderLargerThumbnail: true,
-                            thumbnailUrl: 'https://btch.pages.dev/file/13912a80a67472cad91c3.jpg',
+                            thumbnailUrl: 'https://telegra.ph/file/13912a80a67472cad91c3.jpg',
                             sourceUrl: null,
                             mediaType: 1,
                         }

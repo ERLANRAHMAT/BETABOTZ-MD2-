@@ -16,7 +16,7 @@ async function handler(m, { conn, usedPrefix, command }) {
         externalAdReply: {
             title: 'Img2Prompt',
             body: '',
-            thumbnailUrl: 'https://btch.pages.dev/file/dbb8cc0a157e3aa856877.jpg',
+            thumbnailUrl: 'https://telegra.ph/file/dbb8cc0a157e3aa856877.jpg',
             sourceUrl: "https://api.betabotz.eu.org",
             mediaType: 1,
             renderLargerThumbnail: true

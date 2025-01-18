@@ -170,7 +170,7 @@ let handler = async (m, { text, usedPrefix, command }) => {
                         mediaType: 1,
                         previewType: 0,
                         renderLargerThumbnail: true,
-                        thumbnailUrl: `https://btch.pages.dev/file/712fb213f59599c0e7ea7.jpg`,
+                        thumbnailUrl: `https://telegra.ph/file/712fb213f59599c0e7ea7.jpg`,
                         sourceUrl: '',
                     }
                 }, mentions: [m.sender]

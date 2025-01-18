@@ -15,7 +15,7 @@ let handler = async (m, {
     if (!num) throw `Ex: ${usedPrefix + cmd} @tag / 628xxx`
     num = num.replace(/\D/g, '') + '@s.whatsapp.net'
     if (!(await conn.onWhatsApp(num))[0]?.exists) throw 'User not exists'
-    let img = await conn.profilePictureUrl(num, 'image').catch(_ => 'https://btch.pages.dev/file/70e8de9b1879568954f09.jpg')
+    let img = await conn.profilePictureUrl(num, 'image').catch(_ => 'https://telegra.ph/file/70e8de9b1879568954f09.jpg')
     let bio = await conn.fetchStatus(num).catch(_ => {})
     let name = await conn.getName(num)
     let business = await conn.getBusinessProfile(num)
