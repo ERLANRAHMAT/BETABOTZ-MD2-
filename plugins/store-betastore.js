@@ -1,4 +1,4 @@
-//free source code store by betabotz di buat oleh danaputra133 github
+//free source code store by betabotz di buat oleh danapura133
 //silahkan di ganti ganti sesuka hati kalian
 
 const moment = require('moment-timezone');
@@ -9,6 +9,7 @@ const handler = async (message, { usedPrefix, text, command, isOwner }) => {
     global.db.data.store = global.db.data.store || [];
 
     const storeData = global.db.data.store;
+
     if (command === 'liststore') {
         if (!storeData.length) throw `Belum ada item di store. Gunakan *${usedPrefix}addlist* untuk menambahkan.`;
 
@@ -25,13 +26,12 @@ const handler = async (message, { usedPrefix, text, command, isOwner }) => {
 Berikut adalah daftar item di store:
 ${itemList}
 
-*Ketik ${usedPrefix}store + kata kunci untuk menggunakannya!* \n contoh: ${usedPrefix}store katakunci`;
+*Ketik nama kata kunci untuk menggunakannya!*`;
         return message.reply(replyMessage);
     }
 
-    if (command === 'store') {
-        if (!text) throw `Harap masukkan kata kunci. Contoh: *${usedPrefix}store kataKunci*`;
-        const keyword = text.toLowerCase();
+    if (command === 'store' || text) {
+        const keyword = text ? text.toLowerCase() : command.toLowerCase();
         const matchedItem = storeData.find(item => item.key.toLowerCase() === keyword);
 
         if (matchedItem) {
@@ -40,7 +40,7 @@ ${itemList}
             } else {
                 return message.reply(matchedItem.response);
             }
-        } else {
+        } else if (command === 'store') {
             throw `Item dengan kata kunci *${keyword}* tidak ditemukan. Gunakan *${usedPrefix}liststore* untuk melihat daftar item.`;
         }
     }
@@ -71,12 +71,30 @@ ${itemList}
         return message.reply(`Berhasil menambahkan *${key}* ke daftar store!`);
     }
 
+    if (command === 'editlist') {
+        if (!isOwner) throw `Hanya owner yang dapat mengedit item di store.`;
+        if (!text.includes('|')) throw `Format tidak valid. Contoh: *${usedPrefix}${command} namaItem | responsBaru*`;
+
+        const [key, ...responseParts] = text.split('|').map(part => part.trim());
+        const newResponse = responseParts.join('|');
+
+        if (!key || !newResponse) throw `Format tidak valid. Contoh: *${usedPrefix}${command} namaItem | responsBaru*`;
+
+        const item = storeData.find(item => item.key === key);
+        if (item) {
+            item.response = newResponse;
+            return message.reply(`Berhasil mengedit item *${key}*!`);
+        } else {
+            throw `Item *${key}* tidak ditemukan. Gunakan *${usedPrefix}liststore* untuk melihat daftar item.`;
+        }
+    }
+
     throw `Perintah tidak dikenali. Silakan coba lagi.`;
 };
 
-handler.help = ['liststore', 'dellist', 'store', 'addlist'];
+handler.help = ['liststore', 'dellist', 'store', 'addlist', 'editlist'];
 handler.tags = ['main'];
-handler.command = /^liststore|dellist|store|addlist$/i;
+handler.command = /^liststore|dellist|store|addlist|editlist$/i;
 handler.owner = false; 
 
 module.exports = handler;

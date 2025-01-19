@@ -21,41 +21,63 @@ let handler = async (m, {
     var error = fs.readFileSync(`./media/sticker/emror.webp`)
     
     try {
-
         if (command === 'attp') {
             res = `https://api.betabotz.eu.org/api/maker/attp?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
+            let fetchResult = await fetch(res)
+            let imageBuffer = await fetchResult.buffer()
+            
+            let stiker = await sticker5(
+                imageBuffer,
+                null,
+                packname,
+                author,
+                ['🎨']
+            )
+            
+            if (stiker) {
+                await conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+            } else {
+                throw new Error('Pembuatan stiker gagal')
+            }
         } else if (command === 'ttp') {
             res = `https://api.betabotz.eu.org/api/maker/ttp?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
+            let fetchResult = await fetch(res)
+            let imageBuffer = await fetchResult.buffer()
+            
+            let stiker = await sticker5(
+                imageBuffer,
+                null,
+                packname,
+                author,
+                ['🎨']
+            )
+            
+            if (stiker) {
+                await conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+            } else {
+                throw new Error('Pembuatan stiker gagal')
+            }
         } else if (command === 'brat') {
             res = `https://api.betabotz.eu.org/api/maker/brat?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
-        }
-        // switch(command) {
-        //     case 'attp':
-        //         res = `https://api.betabotz.eu.org/api/maker/attp?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
-        //         break;
-        //     case 'ttp':
-        //         res = `https://api.betabotz.eu.org/api/maker/ttp?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
-        //         break;
-        //     case 'brat':
-        //         res = `https://api.betabotz.eu.org/api/maker/brat?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
-        //         break;
-        // }
-
-        let fetchResult = await fetch(res)
-        let imageBuffer = await fetchResult.buffer()
-
-        let stiker = await sticker5(
-            imageBuffer,
-            null,
-            packname,
-            author,
-            ['🎨']
-        )
-        
-        if (stiker) {
-            await conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
-        } else {
-            throw new Error('Pembuatan stiker gagal')
+            let fetchResult = await fetch(res)
+            let imageBuffer = await fetchResult.buffer()
+            
+            let stiker = await sticker5(
+                imageBuffer,
+                null,
+                packname,
+                author,
+                ['🎨']
+            )
+            
+            if (stiker) {
+                await conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+            } else {
+                throw new Error('Pembuatan stiker gagal')
+            }
+        } else if (command === 'bratvideo') {
+            res = `https://api.betabotz.eu.org/api/maker/brat-video?text=${encodeURIComponent(text.substring(0, 151))}&apikey=${lann}`;
+            await conn.sendVideoAsSticker(m.chat, res, m, { packname: packname, author: author })
         }
         
     } catch (e) {
@@ -64,7 +86,7 @@ let handler = async (m, {
     }
 }
 
-handler.command = handler.help = ['attp', 'ttp', 'brat']
+handler.command = handler.help = ['attp', 'ttp', 'brat', 'bratvideo']
 handler.tags = ['sticker']
 handler.limit = true
 handler.group = false
