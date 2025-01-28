@@ -2,9 +2,9 @@ const fetch = require('node-fetch');
 
 let handler = async (m, { conn, args, usedPrefix, command }) => {
     if (!args[0]) throw `*Example:* ${usedPrefix}${command} https://www.mediafire.com/file/941xczxhn27qbby/GBWA_V12.25FF-By.SamMods-.apk/file`;
-    
+    const q = await encodeURIComponent(args[0]);
     try {
-        const response = await fetch(`https://api.betabotz.eu.org/api/download/mediafire?url=${args[0]}&apikey=${lann}`);
+        const response = await fetch(`https://api.betabotz.eu.org/api/download/mediafire?url=${q}&apikey=${lann}`);
         const json = await response.json();
         
         if (!json.result) throw 'Failed to fetch!';
