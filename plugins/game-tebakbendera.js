@@ -1,44 +1,44 @@
-// /*
-// wa.me/6282285357346
-// github: https://github.com/sadxzyq
-// Instagram: https://instagram.com/tulisan.ku.id
-// */
+let fetch = require('node-fetch')
 
-// const fetch = require('node-fetch')
-// let timeout = 120000
-// let poin = 1000
-// let handler = async (m, { conn, usedPrefix }) => {
-//   conn.tebakbendera = conn.tebakbendera ? conn.tebakbendera : {}
-//   let id = m.chat
-//   if (id in conn.tebakbendera) {
-//     conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebakbendera[id][0])
-//     throw false
-//   }
-//   let src = await (await fetch('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakbendera2.json')).json()
-//   let json = src[Math.floor(Math.random() * src.length)]
-//   let caption = `
-//   Bendera apakah ini?
-// Timeout *${(timeout / 1000).toFixed(2)} detik*
-// Ketik ${usedPrefix}tebe untuk bantuan
-// Bonus: ${poin} Kredit sosial\n
-// REPLAY SOAL UNTUK MENJAWAB
-//     `.trim()
-//   conn.tebakbendera[id] = [
-//     await conn.sendFile(m.chat, json.img, 'bendera.jpg', caption, m)
-//     ,
-//     json, poin,
-//     setTimeout(async () => {
-//       if (conn.tebakbendera[id]) await conn.reply(m.chat, `Waktu habis!\nJawabannya adalah *${json.name}*`, conn.tebakbendera[id][0])
-//       delete conn.tebakbendera[id]
-//     }, timeout)
-//   ]
-// }
-// handler.help = ['tebakbendera']
-// handler.tags = ['game']
-// handler.command = /^tebakbendera/i
+let timeout = 100000
+let poin = 500
+let handler = async (m, { conn, usedPrefix }) => {
+    conn.tebakbendera2 = conn.tebakbendera2 ? conn.tebakbendera2 : {}
+    let id = m.chat
+    if (id in conn.tebakbendera2) {
+        conn.reply(m.chat, 'Masih ada soal belum terjawab di chat ini', conn.tebakbendera2[id][0])
+        throw false
+    }
+    // di sini dia ngambil data dari api
+    let src = await (await fetch(`https://api.betabotz.eu.org/api/game/tebakbendera?apikey=${lann}`)).json()
+    let json = src[Math.floor(Math.random() * src.length)]
+    // buat caption buat di tampilin di wa
+    let caption = `
+${json.bendera}
 
+┌─⊷ *SOAL*
+▢ Timeout *${(timeout / 1000).toFixed(2)} detik*
+▢ Ketik ${usedPrefix}teii untuk bantuan
+▢ Bonus: ${poin} Kredit sosial
+▢ *Balas/ replay soal ini untuk menjawab*
+└──────────────
+`.trim()
+    conn.tebakbendera2[id] = [
+        await conn.reply(m.chat, caption, m),
+        json, poin,
+        setTimeout(() => {
+            if (conn.tebakbendera2[id]) conn.reply(m.chat, `Waktu habis!\nJawabannya adalah *${json.nama}*`, conn.tebakbendera2[id][0])
+            delete conn.tebakbendera2[id]
+        }, timeout)
+    ]
+}
+handler.help = ['tebakbendera']
+handler.tags = ['game']
+handler.command = /^tebakbendera/i
+handler.register = false
+handler.group = true
 
-// module.exports = handler
+module.exports = handler
 
-
-// //danaputra133
+// tested di bileys versi 6.5.0 dan sharp versi 0.30.5
+// danaputra133

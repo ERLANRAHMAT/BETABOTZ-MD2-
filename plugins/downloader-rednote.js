@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) throw `Masukan URL!\n\nContoh:\n${usedPrefix + command} http://xhslink.com/a/bXa0qop7t853`;
+    if (!text) throw `Masukan URL!\n\nContoh:\n${usedPrefix + command} https://xhslink.com/a/hlM81D1Yoa63`;
     try {
         if (!text.match(/xhslink|xiaohongshu/gi)) throw `URL Tidak Ditemukan!`;
         m.reply(wait);
@@ -9,7 +9,18 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         let result = res.data.result;
         if (!result || result.err !== 0) throw `Gagal mengambil data!`;
         if (result.video) {
-            await conn.sendFile(m.chat, result.video, "video.mp4", `*Title:* ${result.title || "No title"}`, m);
+            await conn.sendMessage(
+                    m.chat,
+                    {
+                        video: {
+                            url: result.video,
+                        },
+                        caption: `*Title:* ${result.title || "No title"}`,
+                    },
+                    {
+                        mention: m,
+                    }
+                )
         } else if (result.images && result.images.length > 0) {
             for (let img of result.images) {
                 await sleep(3000);

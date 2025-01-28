@@ -1,11 +1,13 @@
 let fs = require('fs')
 let fetch = require('node-fetch')
 let winScore = 500
+let rewardAmount = 100 // Add a variable for reward amount
+
 async function handler(m) {
     conn.family = conn.family ? conn.family : {}
     let id = m.chat
     if (id in conn.family) {
-        if (conn.family[id].id !== undefined) return conn.reply(m.chat, 'Masih ada kuis yang belum terjawab di chat ini' + '\nKetik *Nyerah* untuk mengakhiri / *tunggu 5 detik*', conn.family[id].msg)
+        if (conn.family[id].id !== undefined) return conn.reply(m.chat, 'Masih ada kuis yang belum terjawab di chat ini' + '\nTunggu 3 menit untuk mengakhiri', conn.family[id].msg)
         delete conn.family[id]
         throw false
     }
@@ -19,12 +21,11 @@ async function handler(m) {
 ▢ *Soal:* ${json.soal}
 ▢ Terdapat *${json.jawaban.length}* jawaban${json.jawaban.find(v => v.includes(' ')) ? `
 ▢ (beberapa jawaban terdapat spasi)
-▢ ketik *MENYERAH* tanpa replay soal jika menyerah
-▢ replay soal saat akan *MENJAWAB*
+▢ tunggu 3 menit untuk mengakhiri
 └──────────────
 `: ''}
 
-+${winScore} kredit sosial! tiap jawaban benar
++${rewardAmount} kredit sosial! tiap jawaban benar
     `.trim()
     conn.family[id] = {
         id,
@@ -32,6 +33,13 @@ async function handler(m) {
         ...json,
         terjawab: Array.from(json.jawaban, () => false),
         winScore,
+        rewardAmount, // Include reward amount in the game data
+        timeout: setTimeout(() => {
+            if (conn.family[id]) {
+                conn.reply(m.chat, 'Waktu habis! Game berakhir.', conn.family[id].msg)
+                delete conn.family[id]
+            }
+        }, 100000) // 3 minutes
     }
 }
 handler.help = ['family100']
