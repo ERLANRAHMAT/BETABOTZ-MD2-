@@ -1,13 +1,13 @@
 const similarity = require('similarity')
-const threshold = 0.72 // semakin tinggi nilai, semakin mirip
-let rewardAmount = 1000 // Add a variable for reward amount
+const threshold = 0.72 
+let rewardAmount = 1000 //ganti ini buat jumlah money nya
 
 module.exports = {
     async before(m) {
         this.family = this.family ? this.family : {}
         let id = m.chat
         if (!(id in conn.family)) return 
-        let room = conn.family[id] // Fix the reference to conn.family
+        let room = conn.family[id] 
         if (room.jawaban == undefined) {
             delete conn.family[id]
             return !0
@@ -23,7 +23,7 @@ module.exports = {
         if (room.terjawab[index]) return !0
         let users = global.db.data.users[m.sender]
         room.terjawab[index] = m.sender
-        users.money += rewardAmount // Use reward amount to add points to user's experience
+        users.money += rewardAmount 
 
         let isWin = room.terjawab.length === room.terjawab.filter(v => v).length
         let caption = `

@@ -1,7 +1,7 @@
 let fs = require('fs')
 let fetch = require('node-fetch')
 let winScore = 500
-let rewardAmount = 100 // Add a variable for reward amount
+let rewardAmount = 100 
 
 async function handler(m) {
     conn.family = conn.family ? conn.family : {}
@@ -33,7 +33,7 @@ async function handler(m) {
         ...json,
         terjawab: Array.from(json.jawaban, () => false),
         winScore,
-        rewardAmount, // Include reward amount in the game data
+        rewardAmount, 
         timeout: setTimeout(() => {
             if (conn.family[id]) {
                 conn.reply(m.chat, 'Waktu habis! Game berakhir.', conn.family[id].msg)

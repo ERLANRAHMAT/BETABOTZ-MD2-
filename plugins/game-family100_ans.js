@@ -16,7 +16,7 @@ module.exports = {
         if (room.terjawab[index]) return !0
         let users = global.db.data.users[m.sender]
         room.terjawab[index] = m.sender
-        users.money += room.rewardAmount // Use reward amount to add points to user's money
+        users.money += room.rewardAmount 
 
         let isWin = room.terjawab.length === room.terjawab.filter(v => v).length
         let caption = `
