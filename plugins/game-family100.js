@@ -39,7 +39,7 @@ async function handler(m) {
                 conn.reply(m.chat, 'Waktu habis! Game berakhir.', conn.family[id].msg)
                 delete conn.family[id]
             }
-        }, 100000) // 3 minutes
+        }, 180000) // 3 minutes
     }
 }
 handler.help = ['family100']
