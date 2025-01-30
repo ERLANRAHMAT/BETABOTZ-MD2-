@@ -30,26 +30,11 @@ ${itemList}
         return message.reply(replyMessage);
     }
 
-    if (command === 'store' || text) {
-        const keyword = text ? text.toLowerCase() : command.toLowerCase();
-        const matchedItem = storeData.find(item => item.key.toLowerCase() === keyword);
-
-        if (matchedItem) {
-            if (matchedItem.isImage) {
-                return await this.sendMedia(message.chat, matchedItem.imageUrl, message, { caption: matchedItem.response });
-            } else {
-                return message.reply(matchedItem.response);
-            }
-        } else if (command === 'store') {
-            throw `Item dengan kata kunci *${keyword}* tidak ditemukan. Gunakan *${usedPrefix}liststore* untuk melihat daftar item.`;
-        }
-    }
-
     if (command === 'dellist') {
         if (!isOwner) throw `Hanya owner yang dapat menghapus item dari store.`;
         if (!text) throw `Harap tentukan item yang akan dihapus. Contoh: *${usedPrefix}${command} namaItem*`;
 
-        const itemIndex = storeData.findIndex(item => item.key === text);
+        const itemIndex = storeData.findIndex(item => item.key.toLowerCase() === text.toLowerCase());
         if (itemIndex !== -1) {
             const removedItem = storeData.splice(itemIndex, 1);
             return message.reply(`Berhasil menghapus *${removedItem[0].key}* dari daftar store!`);
@@ -89,12 +74,43 @@ ${itemList}
         }
     }
 
+    if (text && !command) {
+        const keyword = text.toLowerCase();
+        const matchedItem = storeData.find(item => item.key.toLowerCase() === keyword);
+
+        if (matchedItem) {
+            if (matchedItem.isImage) {
+                return await this.sendMedia(message.chat, matchedItem.imageUrl, message, { caption: matchedItem.response });
+            } else {
+                return message.reply(matchedItem.response);
+            }
+        }
+    }
+
     throw `Perintah tidak dikenali. Silakan coba lagi.`;
 };
 
-handler.help = ['liststore', 'dellist', 'store', 'addlist', 'editlist'];
+handler.help = ['liststore', 'dellist', 'addlist', 'editlist'];
 handler.tags = ['main'];
-handler.command = /^liststore|dellist|store|addlist|editlist$/i;
+handler.command = /^liststore|dellist|addlist|editlist$/i;
 handler.owner = false; 
 
 module.exports = handler;
+
+module.exports.all = async (message) => {
+    global.db = global.db || {};
+    global.db.data = global.db.data || {};
+    global.db.data.store = global.db.data.store || [];
+
+    const storeData = global.db.data.store;
+    const text = message.text.toLowerCase();
+    const matchedItem = storeData.find(item => item.key.toLowerCase() === text);
+
+    if (matchedItem) {
+        if (matchedItem.isImage) {
+            return await this.sendMedia(message.chat, matchedItem.imageUrl, message, { caption: matchedItem.response });
+        } else {
+            return message.reply(matchedItem.response);
+        }
+    }
+};
