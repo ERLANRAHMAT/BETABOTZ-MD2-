@@ -92,7 +92,7 @@ async function downloadDouyin(link, m) {
 //                 externalAdReply: {
 //                     title: 'Terabox Downloader',
 //                     body: `Processing ${data.result.length} file(s)`,
-//                     thumbnailUrl: 'https://api.betabotz.eu.org/api/tools/get-upload?id=f/ihnv9wct.jpg',
+//                     thumbnailUrl: 'https://pomf2.lain.la/f/ihnv9wct.jpg',
 //                     sourceUrl: null,
 //                     mediaType: 1,
 //                     renderLargerThumbnail: true
@@ -419,6 +419,7 @@ async function _snackvideo(url, m) {
 
 handler.before = async function (m, { conn, isPrems }) {
 	let chat = global.db.data.chats[m.chat];
+	if (!chat.autodl) return; 
 
 	if (!m.text) {
 		return;

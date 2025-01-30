@@ -851,7 +851,9 @@ module.exports = {
                 if (!('autobio' in chat)) chat.autobio = false
                 if (!('rpg' in chat)) chat.rpg = false
                 if (!('autobackup' in chat)) chat.autobackup = false
+                if (!('autodl' in chat)) chat.autodl = true 
             } else global.db.data.chats[m.chat] = {
+                autodl: true,
                 autobackup: false,
                 autobio: false,
                 autohd: false,

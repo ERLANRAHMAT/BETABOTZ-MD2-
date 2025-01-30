@@ -280,10 +280,19 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
         }
         chat.rpg = isEnable
         break
-      
+    case 'autodl':
+      if (m.isGroup) {
+        if (!(isAdmin || isOwner)) {
+          global.dfail('admin', m, conn)
+          throw false
+        }
+      }
+      chat.autodl = isEnable
+      break
     default:
       if (!/[01]/.test(command)) return m.reply(`
 List option:
+| autodl
 | autobackup
 | rpg
 | autobio
