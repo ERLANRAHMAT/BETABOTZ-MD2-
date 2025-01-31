@@ -846,7 +846,6 @@ module.exports = {
                 if (!('antilinktt' in chat)) chat.antilinktt = false
                 if (!('antilinkttnokick' in chat)) chat.antilinkttnokick = false
                 if (!('antibot' in chat)) chat.antibot = false
-                if (!('autodl' in chat)) chat.autodl = false
                 if (!('autohd' in chat)) chat.autohd = false
                 if (!('autobio' in chat)) chat.autobio = false
                 if (!('rpg' in chat)) chat.rpg = false
@@ -860,7 +859,6 @@ module.exports = {
                 antiporn: false,
                 isBanned: false,
                 welcome: false,
-                autodl: false,
                 welcometype: 1,
                 detect: false,
                 isBannedTime: false,
