@@ -941,7 +941,7 @@ module.exports = {
                     console.error(e)
                 }
             }
-        if (m.id.startsWith('BAE5') && m.id.length === 16 || m.isBaileys && m.fromMe) return
+            if (m.id.startsWith('3EB0') || (m.id.startsWith('BAE5') && m.id.length === 16 || m.isBaileys && m.fromMe)) return;
             m.exp += Math.ceil(Math.random() * 10)
 
             let usedPrefix
