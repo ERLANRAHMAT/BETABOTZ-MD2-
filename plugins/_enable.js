@@ -15,6 +15,24 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
           chat.notifgempa = isEnable
       } else return global.dfail('group', m, conn)
       break
+    case 'notifcuaca':
+      if (m.isGroup) {
+          if (!(isAdmin || isOwner)) {
+              global.dfail('admin', m, conn)
+              return false
+          }
+          chat.notifcuaca = isEnable
+      } else return global.dfail('group', m, conn)
+      break
+    case 'notifsholat':
+      if (m.isGroup) {
+          if (!(isAdmin || isOwner)) {
+              global.dfail('admin', m, conn)
+              return false
+          }
+          chat.notifsholat = isEnable
+      } else return global.dfail('group', m, conn)
+      break
     case 'welcome':
       if (!m.isGroup) {
         if (!isOwner) {
@@ -297,6 +315,8 @@ List option:
 | rpg
 | autobio
 | notifgempa
+| notifcuaca
+| notifsholat
 | antiporn
 | welcome
 | delete
