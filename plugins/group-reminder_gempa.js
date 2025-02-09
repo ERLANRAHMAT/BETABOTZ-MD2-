@@ -1,11 +1,6 @@
 const axios = require('axios');
 const { setInterval } = require('timers');
 
-const groupChats = [
-    'jid1@g.us', 
-    'jid2@g.us', 
-];
-
 let lastGempaData = null; 
 
 async function getGempaInfo() {
@@ -53,9 +48,12 @@ async function getGempaInfo() {
 }
 
 async function sendGempaReminderToGroups(gempaInfo) {
-    for (const chatId of groupChats) {
-        const reminderMessage = `🚨 *PENGINGAT GEMPA BUMI* 🚨\n\n🕒 Waktu: ${gempaInfo.waktu}\n🌍 Wilayah: ${gempaInfo.wilayah}\n💥 Magnitudo: ${gempaInfo.magnitude}\n🌐 Lintang: ${gempaInfo.lintang}\n🌐 Bujur: ${gempaInfo.bujur}\n🔍 Kedalaman: ${gempaInfo.kedalaman}\n🌊 Potensi: ${gempaInfo.potensi}\n📷 Gambar Peta: ${gempaInfo.gambar}\n\nJaga keselamatan kalian!`;
-        await sendReminderToGroup(chatId, reminderMessage); 
+    for (const chatId of Object.keys(global.db.data.chats)) {
+        const chat = global.db.data.chats[chatId];
+        if (chat.notifgempa) {
+            const reminderMessage = `🚨 *PENGINGAT GEMPA BUMI* 🚨\n\n🕒 Waktu: ${gempaInfo.waktu}\n🌍 Wilayah: ${gempaInfo.wilayah}\n💥 Magnitudo: ${gempaInfo.magnitude}\n🌐 Lintang: ${gempaInfo.lintang}\n🌐 Bujur: ${gempaInfo.bujur}\n🔍 Kedalaman: ${gempaInfo.kedalaman}\n🌊 Potensi: ${gempaInfo.potensi}\n📷 Gambar Peta: ${gempaInfo.gambar}\n\nJaga keselamatan kalian!`;
+            await sendReminderToGroup(chatId, reminderMessage); 
+        }
     }
 }
 
@@ -67,8 +65,8 @@ async function sendReminderToGroup(chatId, text) {
 function startGempaReminder() {
     setInterval(() => {
         console.log('Mengecek data gempa terbaru...');
-        getGempaInfo(); 
-    }, 60 * 60 * 1000); 
+        getGempaInfo();
+    }, 60 * 1000); 
 }
 
-startGempaReminder(); 
+startGempaReminder();

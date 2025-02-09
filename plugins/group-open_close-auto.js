@@ -1,103 +1,57 @@
+let moment = require('moment-timezone');
+let schedule = require('node-schedule');
 
-//KALIAN BOLEH AKTIFKAN FITUR INI JIKA INGIN MENGGUNAKAN NYA
+const timeZone = 'Asia/Jakarta';
 
+let handler = async (m, { conn, command, args, isOwner, isAdmin }) => {
+    let chat = global.db.data.chats[m.chat];
+    if (!m.isGroup) throw 'Perintah ini hanya bisa digunakan di grup!';
+    if (!(isAdmin || isOwner)) throw 'Perintah ini hanya bisa digunakan oleh admin grup!';
 
-// /*
-// *<>AUTOCLOSEGC<>*
-// SOURCE: https://whatsapp.com/channel/0029VaJYWMb7oQhareT7F40V
-// DON'T DELETE THIS WM!
-// HAPUS WM MANDUL 7 TURUNAN 
-// *BEBAS RECODE,ASAL INI WM JANGAN DIHAPUS ASU*
-// "aku janji tidak akan hapus wm ini"
-// RABU, 15 OKTOBER 2024 07:11
-// */
-// let moment = require('moment-timezone')
-// let schedule = require ('node-schedule')
+    if (command === 'aktif' && args[0] === 'autogc') {
+        if (args.length < 2) throw 'Format salah! Gunakan .aktif autogc jam tutup|jam buka\nContoh: .aktif autogc 21|5';
+        let [closeTime, openTime] = args[1].split('|').map(Number);
+        if (isNaN(closeTime) || isNaN(openTime)) throw 'Jam tutup dan buka harus berupa angka!';
+        chat.autoGc = { closeTime, openTime };
+        m.reply(`Auto group close/open diaktifkan. Grup akan tutup pukul ${closeTime}:00 dan buka pukul ${openTime}:00.`);
+    } else if (command === 'mati' && args[0] === 'autogc') {
+        delete chat.autoGc;
+        m.reply('Auto group close/open dinonaktifkan.');
+    }
+};
 
-// const timeZone = 'Asia/Jakarta';
+handler.command = /^(aktif|mati)$/i;
+handler.help = ['aktif autogc jam tutup|jam buka', 'mati autogc'];
+handler.tags = ['group'];
+handler.admin = true;
+handler.group = true;
 
-// // Konfigurasi waktu tutup dan buka grup
-// const closeTime = '23:00'; // tutup grub
-// const openTime = '05:00'; // buka grub
+module.exports = handler;
 
-// // Daftar ID grup yang ingin dikelola
-// const groupChats = [
-//     // Ganti dengan ID grup yang sesuai
-//     '120363180929269883@g.us'
-//     // '120363043100546404@g.us'  //  ID grup di sini bisa di ambil dari exac => m di grub kamu
-// ];
+const checkGroupsStatus = async (conn) => {
+    const currentTime = moment().tz(timeZone).format('HH:mm');
 
-// // Variabel status grup dan nama asli grup
-// let groupStatus = {};
-// let originalGroupNames = {};
-// let reminderSent = {};
+    for (const chatId of Object.keys(global.db.data.chats)) {
+        const chat = global.db.data.chats[chatId];
+        if (!chat.autoGc) continue;
 
-// // Fungsi untuk memeriksa waktu dan mengubah status serta nama grup
-// const checkGroupsStatus = async (conn) => {
-//     const currentTime = moment().tz(timeZone).format('HH:mm');
+        const { closeTime, openTime } = chat.autoGc;
+        const currentHour = moment().tz(timeZone).hour();
 
-//     for (const chatId of groupChats) {
-//         const groupMetadata = await conn.groupMetadata(chatId);
-//         const currentGroupName = groupMetadata.subject;
+        if (currentHour === closeTime && chat.groupStatus !== 'closed') {
+            await conn.groupSettingUpdate(chatId, 'announcement');
+            await conn.sendMessage(chatId, { text: `( OTOMATIS ) 𝖦𝖱𝖮𝖴𝖯 𝖢𝖫𝖮𝖲𝖤, 𝖣𝖠𝖭 𝖠𝖪𝖠𝖭 𝖣𝖨𝖡𝖴𝖪𝖠 𝖩𝖠𝖬 ${openTime}:00 𝖶𝖨𝖡` });
+            chat.groupStatus = 'closed';
+        }
 
-//         // Simpan nama asli grup jika belum tersimpan
-//         if (!originalGroupNames[chatId]) {
-//             originalGroupNames[chatId] = currentGroupName;
-//         }
+        if (currentHour === openTime && chat.groupStatus !== 'opened') {
+            await conn.groupSettingUpdate(chatId, 'not_announcement');
+            await conn.sendMessage(chatId, { text: `( OTOMATIS ) 𝖦𝖱𝖮𝖴𝖯 𝖮𝖯𝖤𝖭, 𝖣𝖠𝖭 𝖠𝖪𝖠𝖭 𝖣𝖨𝖳𝖴𝖳𝖴𝖯 𝖩𝖠𝖬 ${closeTime}:00 𝖶𝖨𝖡` });
+            chat.groupStatus = 'opened';
+        }
+    }
+};
 
-//         // Hitung waktu 5 menit sebelum tutup dan buka
-//         const closeReminderTime = moment(closeTime, 'HH:mm').subtract(5, 'minutes').format('HH:mm');
-//         const openReminderTime = moment(openTime, 'HH:mm').subtract(5, 'minutes').format('HH:mm');
-
-//         // Pengingat 5 menit sebelum tutup
-//         if (currentTime === closeReminderTime && !reminderSent[`${chatId}-close`]) {
-//             await conn.sendMessage(chatId, { text: `𝗣𝗘𝗥𝗜𝗡𝗚𝗔𝗧𝗔𝗡!!
-// <-> ɢʀᴏᴜᴘ ᴀᴋᴀɴ ᴛᴇʀᴛᴜᴛᴜᴘ 5 ᴍᴇɴɪᴛ ʟᴀɢɪ <->` });
-//             reminderSent[`${chatId}-close`] = true; // Setel pengingat terkirim
-//         }
-
-//         // Pengingat 5 menit sebelum buka
-//         if (currentTime === openReminderTime && !reminderSent[`${chatId}-open`]) {
-//             await conn.sendMessage(chatId, { text: `𝗣𝗘𝗥𝗜𝗡𝗚𝗔𝗧𝗔𝗡!!
-// <-> ɢʀᴏᴜᴘ ᴀᴋᴀɴ ᴛᴇʀʙᴜᴋᴀ 5 ᴍᴇɴɪᴛ ʟᴀɢɪ <->` });
-//             reminderSent[`${chatId}-open`] = true; // Setel pengingat terkirim
-//         }
-
-//         // Tutup grup jika waktunya tepat dan grup belum ditutup
-//         if (currentTime === closeTime && groupStatus[chatId] !== 'closed') {
-//             await conn.groupSettingUpdate(chatId, 'announcement');
-//             await conn.groupUpdateSubject(chatId, `${originalGroupNames[chatId]} (𝗖𝗟𝗢𝗦𝗘)`);
-//             await conn.sendMessage(chatId, { text: `( OTOMATIS ) 𝖦𝖱𝖮𝖴𝖯 𝖢𝖫𝖮𝖲𝖤, 𝖣𝖠𝖭 𝖠𝖪𝖠𝖭 𝖣𝖨𝖡𝖴𝖪𝖠 𝖩𝖠𝖬 ${openTime} 𝖶𝖨𝖡` });
-//             groupStatus[chatId] = 'closed';
-//             reminderSent[`${chatId}-close`] = false; // Reset pengingat
-//         }
-
-//         // Buka grup jika waktunya tepat dan grup belum dibuka
-//         if (currentTime === openTime && groupStatus[chatId] !== 'opened') {
-//             await conn.groupSettingUpdate(chatId, 'not_announcement');
-//             await conn.groupUpdateSubject(chatId, originalGroupNames[chatId]); // Kembalikan nama asli grup
-//             await conn.sendMessage(chatId, { text: `( OTOMATIS ) 𝖦𝖱𝖮𝖴𝖯 𝖮𝖯𝖤𝖭, 𝖣𝖠𝖭 𝖠𝖪𝖠𝖭 𝖣𝖨𝖳𝖴𝖳𝖴𝖯 𝖩𝖠𝖬 ${closeTime} 𝖶𝖨𝖡` });
-//             groupStatus[chatId] = 'opened';
-//             reminderSent[`${chatId}-open`] = false; // Reset pengingat
-//         }
-//     }
-// };
-
-// // Jadwalkan pemeriksaan status grup setiap menit
-// schedule.scheduleJob('* * * * *', () => {
-//     checkGroupsStatus(conn);
-// });
-// /*
-// *<>AUTOCLOSEGC<>*
-// SOURCE: https://whatsapp.com/channel/0029VaJYWMb7oQhareT7F40V
-// DON'T DELETE THIS WM!
-// HAPUS WM MANDUL 7 TURUNAN 
-// *BEBAS RECODE,ASAL INI WM JANGAN DIHAPUS*
-// "aku janji tidak akan hapus wm ini"
-// RABU, 15 OKTOBER 2024 07:11
-// */
-// /*
-// *SUMBER: https://whatsapp.com/channel/0029VaJYWMb7oQhareT7F40V
-// *GRUP DISKUSI: https://chat.whatsapp.com/ETZ8r7CLypfAPH93q0gC0y
-// ini tanda air kang, jangan dihapus
-// */
+schedule.scheduleJob('* * * * *', () => {
+    checkGroupsStatus(conn);
+});

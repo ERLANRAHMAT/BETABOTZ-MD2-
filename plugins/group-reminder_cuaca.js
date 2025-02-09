@@ -1,11 +1,6 @@
 const axios = require('axios');
 const { setInterval } = require('timers');
 
-const groupChats = [
-    'jid1@g.us', 
-    'jid2@g.us', 
-];
-
 let location = 'Jakarta'; 
 
 async function getWeatherInfo() {
@@ -29,6 +24,7 @@ async function getWeatherInfo() {
             humidity: res.humidity,
             windSpeed: res.windSpeed,
         };
+        
 
         console.log(`
         Lokasi: ${weatherInfo.location}
@@ -47,9 +43,12 @@ async function getWeatherInfo() {
 }
 
 async function sendWeatherReminderToGroups(weatherInfo) {
-    for (const chatId of groupChats) {
-        const reminderMessage = `🌤️ *PENGINGAT CUACA* 🌤️\n\n📍 Lokasi: ${weatherInfo.location}\n🌍 Negara: ${weatherInfo.country}\n🌦️ Cuaca: ${weatherInfo.weather}\n🌡️ Suhu saat ini: ${weatherInfo.currentTemp}\n🌡️ Suhu tertinggi: ${weatherInfo.maxTemp}\n🌡️ Suhu terendah: ${weatherInfo.minTemp}\n💧 Kelembapan: ${weatherInfo.humidity}\n🌬️ Angin: ${weatherInfo.windSpeed}\n\nTetap waspada dan jaga kesehatan!`;
-        await sendReminderToGroup(chatId, reminderMessage);
+    for (const chatId of Object.keys(global.db.data.chats)) {
+        const chat = global.db.data.chats[chatId];
+        if (chat.notifcuaca) {
+            const reminderMessage = `🌤️ *PENGINGAT CUACA* 🌤️\n\n📍 Lokasi: ${weatherInfo.location}\n🌍 Negara: ${weatherInfo.country}\n🌦️ Cuaca: ${weatherInfo.weather}\n🌡️ Suhu saat ini: ${weatherInfo.currentTemp}\n🌡️ Suhu tertinggi: ${weatherInfo.maxTemp}\n🌡️ Suhu terendah: ${weatherInfo.minTemp}\n💧 Kelembapan: ${weatherInfo.humidity}\n🌬️ Angin: ${weatherInfo.windSpeed}\n\nTetap waspada dan jaga kesehatan!`;
+            await sendReminderToGroup(chatId, reminderMessage); 
+        }
     }
 }
 
@@ -62,7 +61,9 @@ function checkTimeAndSendWeather() {
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    if (hours === 6 && minutes === 0) { // Jika jam 06:00
+    // if ((hours === 7 || hours === 12 || hours === 18) && minutes === 0) 
+    // ini bisa di ganti ganti waktu nya kalian sesuai aja waktu yang kalian mau 
+    if ((hours === 7 || hours === 12 || hours === 18) && minutes === 0) { 
         console.log('Mengambil data cuaca terbaru...');
         getWeatherInfo(); 
     }
@@ -71,7 +72,7 @@ function checkTimeAndSendWeather() {
 function startDailyWeatherReminder() {
     setInterval(() => {
         checkTimeAndSendWeather(); 
-    }, 60 * 1000); 
+    }, 60 * 1000); // Cek setiap menit
 }
 
-startDailyWeatherReminder(); 
+startDailyWeatherReminder();

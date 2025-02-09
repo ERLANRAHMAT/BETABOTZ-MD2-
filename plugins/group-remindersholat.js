@@ -3,11 +3,6 @@ let moment = require('moment-timezone');
 
 const timeZone = 'Asia/Jakarta';
 
-const groupChats = [
-    'jid@g.us',
-    'jid@g.us',
-];
-
 async function getPrayerTimesAndSetReminders() {
     try {
         let city = 'jakarta';
@@ -88,14 +83,17 @@ function setPrayerTimers(jadwal) {
 }
 
 async function sendPrayerReminderToGroups(prayerName, prayerTime) {
-    for (const chatId of groupChats) {
-        const reminderMessage = `⏰ *PENGINGAT SHOLAT*\n\n🚨 Waktu Sholat ${prayerName} telah tiba!\nJam: ${prayerTime}\nJangan lupa untuk melaksanakan sholat.`;
-        await sendReminderToGroup(chatId, reminderMessage);
+    for (const chatId of Object.keys(global.db.data.chats)) {
+        const chat = global.db.data.chats[chatId];
+        if (chat.notifsholat) {
+            const reminderMessage = `⏰ *PENGINGAT SHOLAT*\n\n🚨 Waktu Sholat ${prayerName} telah tiba!\nJam: ${prayerTime}\nJangan lupa untuk melaksanakan sholat.`;
+            await sendReminderToGroup(chatId, reminderMessage); 
+        }
     }
 }
 
 async function sendReminderToGroup(chatId, text) {
-    await conn.sendMessage(chatId, { text });
+    await conn.sendMessage(chatId, { text }); 
 }
 
 function startDailyPrayerReminder() {
