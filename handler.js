@@ -851,7 +851,13 @@ module.exports = {
                 if (!('rpg' in chat)) chat.rpg = false
                 if (!('autobackup' in chat)) chat.autobackup = false
                 if (!('autodl' in chat)) chat.autodl = true 
+                if (!('notifgempa' in chat)) chat.notifgempa = false
+                if (!('notifcuaca' in chat)) chat.notifcuaca = false
+                if (!('notifsholat' in chat)) chat.notifsholat = false
             } else global.db.data.chats[m.chat] = {
+                notifsholat: false,
+                notifgempa: false,
+                notifcuaca: false,    
                 autodl: true,
                 autobackup: false,
                 autobio: false,
