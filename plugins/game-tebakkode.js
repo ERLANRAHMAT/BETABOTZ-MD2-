@@ -23,6 +23,7 @@ ${options}
 ▢ Bahasa: *${json.bahasa}*
 ▢ Timeout *${(timeout / 1000).toFixed(2)} detik*
 ▢ Bonus: ${poin} money
+▢ Ketik ${usedPrefix}kdo untuk clue jawaban
 ▢ *Balas/ replay soal ini untuk menjawab dengan a, b, c, atau d*
 └──────────────
 `.trim()
