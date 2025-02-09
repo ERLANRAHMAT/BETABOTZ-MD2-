@@ -14,6 +14,15 @@ module.exports = {
         }
         let text = m.text.toLowerCase().replace(/[^\w\s\-]+/, '')
         if (!room) return !0
+
+        if (text === 'nyerah') {
+            let allAnswers = room.jawaban.map((jawaban, index) => `(${index + 1}) ${jawaban}`).join('\n')
+            this.reply(m.chat, `Permainan berakhir karena menyerah.\n\nJawaban yang benar:\n${allAnswers}`, room.msg)
+            clearTimeout(room.timeout)
+            delete conn.family[id]
+            return !0
+        }
+
         let index = room.jawaban.indexOf(text)
         if (index < 0) {
             if (Math.max(...room.jawaban.filter((_, index) => !room.terjawab[index]).map(jawaban => similarity(jawaban, text))) >= threshold) m.reply('Dikit lagi!')
@@ -32,7 +41,7 @@ module.exports = {
 Terdapat *${room.jawaban.length}* jawaban${room.jawaban.find(v => v.includes(' ')) ? `
 (beberapa jawaban terdapat spasi)
 `: ''}
-${isWin ? `*SEMUA JAWABAN TERJAWAB*` : ''}
+${isWin ? `*SEMUA JAWABAN TERJAWAB*\nSelamat, Anda telah menjawab semua jawaban dengan benar!` : ''}
 ${Array.from(room.jawaban, (jawaban, index) => {
             return room.terjawab[index] ? `(${index + 1}) ${jawaban} ${room.terjawab[index] ? '@' + room.terjawab[index].split('@')[0] : ''}`.trim() : false
         }).filter(v => v).join('\n')}

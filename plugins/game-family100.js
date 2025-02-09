@@ -22,6 +22,7 @@ async function handler(m) {
 ▢ Terdapat *${json.jawaban.length}* jawaban${json.jawaban.find(v => v.includes(' ')) ? `
 ▢ (beberapa jawaban terdapat spasi)
 ▢ tunggu 3 menit untuk mengakhiri
+▢ ketik *nyerah* untuk menyelesaikan permainan
 └──────────────
 `: ''}
 
@@ -46,6 +47,17 @@ handler.help = ['family100']
 handler.tags = ['game']
 handler.group = true
 handler.command = /^family100$/i
+
+handler.nyerah = async function (m) {
+    let id = m.chat
+    if (id in conn.family) {
+        conn.reply(m.chat, 'Permainan berakhir karena menyerah.', conn.family[id].msg)
+        clearTimeout(conn.family[id].timeout)
+        delete conn.family[id]
+    } else {
+        conn.reply(m.chat, 'Tidak ada permainan yang sedang berlangsung.', m)
+    }
+}
 
 module.exports = handler
 
