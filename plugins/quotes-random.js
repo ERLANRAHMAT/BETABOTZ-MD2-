@@ -36,13 +36,22 @@ let handler = async (m, { conn, command }) => {
     } else if (command === 'batak') {
         const res = await (await fetch(`https://api.betabotz.eu.org/api/random/batak?apikey=${lann}`)).json();
         anu += res.hasl;
+    } else if (command === 'aceh') {
+        const res = await (await fetch(`https://api.betabotz.eu.org/api/random/aceh?apikey=${lann}`)).json();
+        anu += res.hasl;
+    } else if (command === 'cina') {
+        const res = await (await fetch(`https://api.betabotz.eu.org/api/random/china?apikey=${lann}`)).json();
+        anu += res.hasl;
+    } else if (command === 'minangkabau') {
+        const res = await (await fetch(`https://api.betabotz.eu.org/api/random/minangkabau?apikey=${lann}`)).json();
+        anu += res.hasl;
     }
     m.reply(anu);
 };
 
-handler.help = ['bucin', 'katailham', 'katadilan', 'fiersa', 'fakta', 'nyindir', 'ngawur', 'jawa', 'quotes','sunda','batak'];
+handler.help = ['bucin', 'katailham', 'katadilan', 'fiersa', 'fakta', 'nyindir', 'ngawur', 'jawa', 'quotes','sunda','batak', 'aceh', 'cina', 'minangkabau'];
 handler.tags = ['quotes'];
-handler.command = /^(bucin|katailham|katadilan|fiersa|fakta|nyindir|ngawur|jawa|quotes|sunda|batak)$/i;
+handler.command = /^(bucin|katailham|katadilan|fiersa|fakta|nyindir|ngawur|jawa|quotes|sunda|batak|aceh|cina|minangkabau)$/i;
 handler.owner = false;
 handler.mods = false;
 handler.premium = false;
