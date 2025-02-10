@@ -12,7 +12,7 @@ let handler = async (m, { conn, usedPrefix }) => {
   let json = src[Math.floor(Math.random() * src.length)]
   if (!json) throw "Terjadi kesalahan, ulangi lagi perintah!"
   let caption = `
-≡ _GAME TEBAK MAKANAN_
+≡ _GAME TEBAK POKEMON_
 
 ┌─⊷ *SOAL*
 ▢ Penjelasan: *${json.deskripsi}*
