@@ -113,8 +113,9 @@ let handler = async (m, { conn, args }) => {
     mentionStatus([m.chat], content).catch(console.error);
 };
 
-handler.command = ['status'];
+handler.command = ['upswtag'];
 handler.tags = ['tools'];
-handler.help = ['status'];
+handler.help = ['upswtag'];
+handler.group = true 
 
 module.exports = handler;
