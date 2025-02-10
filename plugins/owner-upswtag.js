@@ -117,5 +117,6 @@ handler.command = ['upswtag'];
 handler.tags = ['tools'];
 handler.help = ['upswtag'];
 handler.group = true 
+handler.owner = true
 
 module.exports = handler;
