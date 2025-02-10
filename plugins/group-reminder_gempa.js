@@ -66,7 +66,7 @@ function startGempaReminder() {
     setInterval(() => {
         console.log('Mengecek data gempa terbaru...');
         getGempaInfo();
-    }, 60 * 1000); 
+    }, 60 * 60 * 1000); 
 }
 
 startGempaReminder();
