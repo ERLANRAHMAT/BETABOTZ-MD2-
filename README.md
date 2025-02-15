@@ -41,7 +41,7 @@
 
 ## Panel
 - Admin Lann [`Buy`](https://wa.me/p/23983051454715720/62895628117900)
-- 
+  
 ## BetaBotz Md || Information & Discussion
 - Group Bot [`Join`](https://chat.whatsapp.com/H8XPKS8vmHm2spliGlKY41)
 ## Support
