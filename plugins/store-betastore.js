@@ -3,12 +3,14 @@
 
 const moment = require('moment-timezone');
 
-const handler = async (message, { usedPrefix, text, command, isOwner }) => {
+const handler = async (message, { usedPrefix, text, command, isOwner, conn }) => {
     global.db = global.db || {};
     global.db.data = global.db.data || {};
     global.db.data.store = global.db.data.store || [];
+    global.db.data.transactions = global.db.data.transactions || [];
 
     const storeData = global.db.data.store;
+    const transactions = global.db.data.transactions;
 
     if (command === 'liststore') {
         if (!storeData.length) throw `Belum ada item di store. Gunakan *${usedPrefix}addlist* untuk menambahkan.`;
@@ -74,25 +76,48 @@ ${itemList}
         }
     }
 
+    //kalau di grebek jb chat aja erlan
+
+    if (command === 'transaksi') {
+        if (!isOwner) throw `Hanya owner yang dapat memproses transaksi.`;
+        if (!text.includes('|')) throw `Format tidak valid. Contoh: *${usedPrefix}${command} @user|namaItem*`;
+
+        const [userTag, itemKey] = text.split('|').map(part => part.trim().toLowerCase());
+        const item = storeData.find(item => item.key.toLowerCase() === itemKey);
+        if (!item) throw `Item *${itemKey}* tidak ditemukan. Gunakan *${usedPrefix}liststore* untuk melihat daftar item.`;
+
+        const transactionId = Math.random().toString(36).substring(2, 10).toUpperCase();
+        const now = moment().tz('Asia/Jakarta');
+        const expiryTime = now.add(5, 'minutes').toISOString();
+
+        transactions.push({ transactionId, userTag, itemKey, expiryTime });
+
+        const replyMessage = `Transaksi berhasil dibuat!\n\nID Transaksi: ${transactionId}\nPembeli: ${userTag}\nItem: ${itemKey}\n\nSilakan lakukan pembayaran dalam waktu 5 menit. Metode pembayaran bisa dilihat di *bayar*\n\nSilakan lakukan pembayaran dan kirim bukti pembayaran dengan caption ID Transaksi.`;
+        await message.reply(replyMessage);
+        return message.reply(`${transactionId}`);
+    }
+
     if (text && !command) {
         const keyword = text.toLowerCase();
         const matchedItem = storeData.find(item => item.key.toLowerCase() === keyword);
 
         if (matchedItem) {
-            if (matchedItem.isImage) {
-                return await this.sendMedia(message.chat, matchedItem.imageUrl, message, { caption: matchedItem.response });
+            if (message.hasMedia) {
+                return; 
             } else {
-                return message.reply(matchedItem.response);
+                if (matchedItem.isImage) {
+                    return await this.sendMedia(message.chat, matchedItem.imageUrl, message, { caption: matchedItem.response });
+                } else {
+                    return message.reply(matchedItem.response);
+                }
             }
         }
     }
-
-    throw `Perintah tidak dikenali. Silakan coba lagi.`;
 };
 
-handler.help = ['liststore', 'dellist', 'addlist', 'editlist'];
-handler.tags = ['main'];
-handler.command = /^liststore|dellist|addlist|editlist$/i;
+handler.help = ['liststore', 'dellist', 'addlist', 'editlist', 'transaksi'];
+handler.tags = ['store'];
+handler.command = /^liststore|dellist|addlist|editlist|transaksi$/i;
 handler.owner = false; 
 
 module.exports = handler;
@@ -101,6 +126,7 @@ module.exports.all = async (message) => {
     global.db = global.db || {};
     global.db.data = global.db.data || {};
     global.db.data.store = global.db.data.store || [];
+    global.db.data.transactions = global.db.data.transactions || [];
 
     const storeData = global.db.data.store;
     const text = message.text.toLowerCase();
@@ -114,3 +140,9 @@ module.exports.all = async (message) => {
         }
     }
 };
+
+
+// no copas code dari luar, logic pakai kepala
+// bebas ubah karena open source
+// danaputra133
+//tutorial pakai ada di: https://youtu.be/fN-RVZLAIzM?si=4xfltGlLyqH2AQud
