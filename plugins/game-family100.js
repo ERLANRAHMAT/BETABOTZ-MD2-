@@ -37,7 +37,8 @@ async function handler(m) {
         rewardAmount, 
         timeout: setTimeout(() => {
             if (conn.family[id]) {
-                conn.reply(m.chat, 'Waktu habis! Game berakhir.', conn.family[id].msg)
+                let allAnswers = conn.family[id].jawaban.map((jawaban, index) => `(${index + 1}) ${jawaban}`).join('\n')
+                conn.reply(m.chat, `Waktu habis! Game berakhir.\n\nJawaban yang benar:\n${allAnswers}`, conn.family[id].msg)
                 delete conn.family[id]
             }
         }, 180000) // 3 minutes
