@@ -1,13 +1,32 @@
 const moment = require('moment-timezone');
+const fs = require('fs');
+const path = require('path');
+
+const storeDatabaseFilePath = path.join(__dirname, 'store-database.json');
+
+const loadStoreDatabase = () => {
+    if (fs.existsSync(storeDatabaseFilePath)) {
+        const data = fs.readFileSync(storeDatabaseFilePath);
+        return JSON.parse(data);
+    }
+    return { store: {}, transactions: {}, setlist: {}, addlist: {} };
+};
+
+const saveStoreDatabase = (data) => {
+    fs.writeFileSync(storeDatabaseFilePath, JSON.stringify(data, null, 2));
+};
 
 const handler = async (message, { isOwner }) => {
-    global.db = global.db || {};
-    global.db.data = global.db.data || {};
-    global.db.data.store = global.db.data.store || [];
-    global.db.data.transactions = global.db.data.transactions || [];
+    const storeDatabase = loadStoreDatabase();
+    storeDatabase.store = storeDatabase.store || {};
+    storeDatabase.transactions = storeDatabase.transactions || {};
 
-    const storeData = global.db.data.store;
-    const transactions = global.db.data.transactions;
+    const chatId = message.chat;
+    storeDatabase.store[chatId] = storeDatabase.store[chatId] || [];
+    storeDatabase.transactions[chatId] = storeDatabase.transactions[chatId] || [];
+
+    const storeData = storeDatabase.store[chatId];
+    const transactions = storeDatabase.transactions[chatId];
 
     if (!isOwner) throw `Hanya owner yang dapat menyelesaikan transaksi.`;
     if (!message.quoted) throw `Harap reply ke pesan yang berisi bukti gambar dengan caption ID transaksi.`;
@@ -29,10 +48,15 @@ const handler = async (message, { isOwner }) => {
     const transactionIndex = transactions.findIndex(t => t.transactionId === transactionId);
     if (transactionIndex !== -1) {
         transactions.splice(transactionIndex, 1);
+        saveStoreDatabase(storeDatabase);
     }
 };
 
 handler.customPrefix = /^done$/i;
 handler.command = new RegExp;
-handler.tags = ['store'];
 module.exports = handler;
+
+// no copas code dari luar, logic pakai kepala
+// bebas ubah karena open source
+// danaputra133
+// tutorial pakai ada di: https://youtu.be/sFj3Mh-z1Jk

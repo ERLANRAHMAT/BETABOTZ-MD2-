@@ -26,5 +26,9 @@ const handler = async (message, { conn }) => {
 
 handler.customPrefix = /^bayar$/i;
 handler.command = new RegExp;
-handler.tags = ['store'];
 module.exports = handler;
+
+// no copas code dari luar, logic pakai kepala
+// bebas ubah karena open source
+// danaputra133
+// tutorial pakai ada di: https://youtu.be/sFj3Mh-z1Jk
