@@ -1,51 +1,64 @@
 const { proto } = require('@adiwajshing/baileys').default;
+
 function msToDate(ms) {
     let temp = ms;
     let days = Math.floor(temp / (24 * 60 * 60 * 1000));
     let daysms = temp % (24 * 60 * 60 * 1000);
-    let hours = Math.floor((daysms) / (60 * 60 * 1000));
+    let hours = Math.floor(daysms / (60 * 60 * 1000));
     let hoursms = daysms % (60 * 60 * 1000);
-    let minutes = Math.floor((hoursms) / (60 * 1000));
+    let minutes = Math.floor(hoursms / (60 * 1000));
     let minutesms = hoursms % (60 * 1000);
-    let sec = Math.floor((minutesms) / 1000);
+    let sec = Math.floor(minutesms / 1000);
     return `${days} hari ${hours} jam ${minutes} menit`;
 }
 
 let handler = async (m, { conn, text, command, usedPrefix }) => {
-    let who = text
+    let who = text;
     switch (command) {
         case 'listsewa':
-            let sewaList = Object.keys(global.db.data.chats).filter(chatId => global.db.data.chats[chatId].expired);
+            let sewaList = Object.entries(global.db.data.chats)
+                .filter(([_, chat]) => chat.expired && chat.expired > Date.now())
+                .map(([id, _]) => id);
+
             if (sewaList.length === 0) {
-                conn.reply(m.chat, `Tidak ada grup yang memiliki masa sewa aktif.`, m);
+                await conn.reply(m.chat, `Tidak ada grup yang memiliki masa sewa aktif.`, m);
             } else {
-                let listText = 'Grup dengan masa sewa aktif:\n\n';
-                for (let chatId of sewaList) {
-                    let remainingTime = global.db.data.chats[chatId].expired - new Date() * 1;
-                    let name = await conn.getName(chatId).catch((_) => "_Not Found_");
-                    listText += `Name: ${name} \nID: ${chatId}\nMasa Aktif: ${msToDate(remainingTime)}\n\n`;
+                let listText = 'ðŸ“‹ Daftar Grup Sewa Aktif:\n\n';
+                for (let i = 0; i < sewaList.length; i++) {
+                    let chatId = sewaList[i];
+                    let remainingTime = global.db.data.chats[chatId].expired - Date.now();
+                    let groupInfo = conn.chats[chatId] || { subject: 'Tidak Dikenal' };
+                    let name = groupInfo.subject;
+                    listText += `*${i + 1}.* *Nama*: ${name}\n  *ID*: ${chatId}\n  *Sisa Waktu*: ${msToDate(remainingTime)}\n\n`;
                 }
-                conn.reply(m.chat, listText, m);
+                await conn.reply(m.chat, listText, m);
             }
             break;
 
         case 'ceksewa':
-            if (!who) throw `Gunakan format yang benar: ${usedPrefix + command} <idgc>`;
-            if (!global.db.data.chats[who]) throw `Grup tidak ditemukan di database.`;
+            if (!text) throw `Contoh penggunaan: ${usedPrefix + command} <nomor urut>\n\nGunakan *${usedPrefix}listsewa* untuk melihat daftar grup sewa aktif.`;
+            if (!/^\d+$/.test(who)) throw "Nomor urut harus berupa angka!";
 
-            let remainingTime = global.db.data.chats[who].expired - new Date() * 1;
-            if (remainingTime > 0) {
-                conn.reply(m.chat, `Masa aktif sewa untuk grup ini adalah ${msToDate(remainingTime)}`, m);
-            } else {
-                conn.reply(m.chat, `Grup ini tidak memiliki masa sewa aktif.`, m);
-            }
+            let sewaListCek = Object.entries(global.db.data.chats)
+                .filter(([_, chat]) => chat.expired && chat.expired > Date.now())
+                .map(([id, _]) => id);
+
+            let index = parseInt(who) - 1;
+            if (index < 0 || index >= sewaListCek.length) throw "Nomor urut tidak valid!";
+
+            let chatId = sewaListCek[index];
+            let chatData = global.db.data.chats[chatId];
+            let remainingTime = chatData.expired - Date.now();
+            let groupInfo = conn.chats[chatId] || { subject: 'Tidak Dikenal' };
+            let name = groupInfo.subject;
+
+            await conn.reply(m.chat, `â³ Informasi Sewa Grup *${name}*:\n\nâ€¢ *ID*: ${chatId}\nâ€¢ *Sisa Waktu*: ${msToDate(remainingTime)}`, m);
             break;
     }
-}
+};
 
-handler.help = ['listsewa', 'ceksewa <idgc>'];
+handler.help = ['listsewa', 'ceksewa <nomor urut>'];
 handler.tags = ['info'];
-handler.command = /^(listsewa|csewa)$/i;
-handler.group = true
+handler.command = /^(listsewa|ceksewa|csewa)$/i;
 
 module.exports = handler;
