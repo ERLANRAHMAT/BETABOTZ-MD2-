@@ -124,7 +124,7 @@ function sendMenu(m, conn, text, replace) {
                     mediaType: 1,
                     previewType: 0,
                     renderLargerThumbnail: true,
-                    thumbnailUrl: 'https://telegra.ph/file/3a34bfa58714bdef500d9.jpg',
+                    thumbnailUrl: 'https://i.supa.codes/SLfSX',
                     sourceUrl: 'https://whatsapp.com/channel/0029Va8ZH8fFXUuc69TGVw1q'
                 }
             },
