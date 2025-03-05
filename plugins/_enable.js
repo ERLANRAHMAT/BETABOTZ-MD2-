@@ -307,6 +307,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.autodl = isEnable
       break
+    case 'autotranslate':
+      if (m.isGroup) {
+          if (!(isAdmin || isOwner)) {
+              global.dfail('admin', m, conn)
+              return false
+          }
+          chat.autotranslate = isEnable
+      } else return global.dfail('group', m, conn)
+      break
     default:
       if (!/[01]/.test(command)) return m.reply(`
 List option:
@@ -339,6 +348,7 @@ List option:
 | gconly
 | swonly
 | autodatabase
+| autotranslate
 Contoh:
 ${usedPrefix}enable welcome
 ${usedPrefix}disable welcome

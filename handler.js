@@ -854,7 +854,9 @@ module.exports = {
                 if (!('notifgempa' in chat)) chat.notifgempa = false
                 if (!('notifcuaca' in chat)) chat.notifcuaca = false
                 if (!('notifsholat' in chat)) chat.notifsholat = false
+                if (!('autotranslate' in chat)) chat.autotranslate = false
             } else global.db.data.chats[m.chat] = {
+                autotranslate: false,
                 notifsholat: false,
                 notifgempa: false,
                 notifcuaca: false,    
